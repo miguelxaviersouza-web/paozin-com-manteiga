@@ -1,1 +1,182 @@
+/* @import para garantir que a fonte Merriweather seja carregada diretamente pelo CSS */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap');
 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #050505; /* Preto profundo de fundo */
+    color: #e0e0e0;
+    font-family: 'Merriweather', Georgia, serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding: 20px;
+    
+    /* Fundo conceitual com silhuetas e elementos estilizados do Paraná (Araucária e Terra Roxa) via SVG */
+    background-image: 
+        linear-gradient(180deg, rgba(5, 5, 5, 0.85) 0%, rgba(20, 5, 25, 0.9) 100%),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='600' viewBox='0 0 1000 600'><path d='M0 500 Q 250 450, 500 520 T 1000 480 L 1000 600 L 0 600 Z' fill='%231a001a'/><path d='M 150 500 L 150 400 M 150 400 L 100 350 M 150 400 L 200 350 M 100 350 L 70 350 M 200 350 L 230 350' stroke='%234d0000' stroke-width='5' fill='none'/><path d='M 750 480 L 750 360 M 750 360 L 680 300 M 750 360 L 820 300 M 680 300 L 630 300 M 820 300 L 870 300' stroke='%234d0000' stroke-width='6' fill='none'/><circle cx='850' cy='150' r='60' fill='%23330000' opacity='0.3'/></svg>");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* Container responsivo adaptável (PC, Tablet e Telemóvel) */
+#game-container {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    aspect-ratio: 4 / 3; /* Mantém a proporção clássica de jogos 2D */
+    background-color: #0a0a0a;
+    border: 3px solid #800020; /* Detalhe em Vermelho Grená */
+    box-shadow: 0 0 25px rgba(128, 0, 128, 0.4), 0 0 10px rgba(255, 0, 0, 0.2); /* Brilho Roxo e Vermelho */
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Telas de interface (Menus, Opções, etc.) */
+.game-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5%;
+    text-align: center;
+    z-index: 10;
+    background: linear-gradient(135deg, rgba(10, 0, 15, 0.95) 0%, rgba(20, 0, 0, 0.95) 100%);
+    
+    /* Transição de tela suave */
+    transition: opacity 0.8s ease, transform 0.8s ease, visibility 0.8s;
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Classe utilitária para ocultar as telas com efeito suave */
+.game-screen.hidden {
+    opacity: 0;
+    transform: scale(0.95);
+    visibility: hidden;
+    pointer-events: none;
+}
+
+h1 {
+    font-size: 2.2rem;
+    color: #ff3333; /* Vermelho vivo para contraste */
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 8px rgba(128, 0, 128, 0.8); /* Sombra Roxa */
+    font-weight: 700;
+}
+
+p {
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 25px;
+    max-width: 650px;
+    color: #d8c0d8; /* Tom roxo acinzentado claro para boa leitura */
+}
+
+/* Container que alinha os botões das opções */
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Botões estilizados (Roxo com borda vermelha) */
+.btn-option {
+    background-color: #1a001a; /* Fundo Roxo bem escuro */
+    color: #ffffff;
+    border: 2px solid #ff0033; /* Borda Vermelha */
+    padding: 12px 20px;
+    font-family: 'Merriweather', Georgia, serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* Efeito Hover nos botões (Inverte as cores e brilha em Roxo) */
+.btn-option:hover {
+    background-color: #ff0033; /* Fundo passa a ser Vermelho */
+    color: #000000;
+    border-color: #9900ff; /* Borda brilha em Roxo */
+    box-shadow: 0 0 15px rgba(153, 0, 255, 0.6);
+    transform: translateY(-2px); /* Pequeno salto para cima */
+}
+
+.btn-option:active {
+    transform: translateY(1px);
+}
+
+/* Elemento Canvas onde o jogo 2D é renderizado */
+canvas {
+    width: 100%;
+    height: 100%;
+    background-color: #12001a; /* Fundo do jogo num tom roxo escuro */
+    display: block;
+}
+
+/* ==========================================================================
+   REGRAS DE RESPONSIVIDADE (MEDIA QUERIES)
+   ========================================================================== */
+
+/* Adaptação para Tablets */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.7rem;
+    }
+    p {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+    .btn-option {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+    #game-container {
+        aspect-ratio: auto;
+        height: 500px; /* Altura fixa confortável para ecrãs médios */
+    }
+}
+
+/* Adaptação para Telemóveis */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    #game-container {
+        height: 420px; /* Altura otimizada para ecrãs pequenos */
+        border-width: 2px;
+    }
+    h1 {
+        font-size: 1.3rem;
+    }
+    p {
+        font-size: 0.8rem;
+        line-height: 1.5;
+    }
+    .options-container {
+        gap: 8px;
+    }
+    .btn-option {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+}
