@@ -5,27 +5,37 @@ let playerOrigin = "";
 const player = { x: 50, y: 480, width: 40, height: 60, speed: 5, color: '#ff0033' };
 const keys = {};
 
-// Captura de comandos do teclado
-window.addEventListener('keydown', e => keys[e.code] = true);
+// Captura de eventos do teclado (Previne problemas com foco de tela)
+window.addEventListener('keydown', e => {
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(e.code)) {
+        e.preventDefault(); // Impede a página de rolar ao jogar
+    }
+    keys[e.code] = true;
+});
 window.addEventListener('keyup', e => keys[e.code] = false);
 
-// Função genérica para transição suave de telas
+// Função de transição suave de telas
 function changeScreen(currentId, nextId) {
-    document.getElementById(currentId).classList.add('hidden');
-    document.getElementById(nextId).classList.remove('hidden');
+    const currentScreen = document.getElementById(currentId);
+    const nextScreen = document.getElementById(nextId);
+    
+    if (currentScreen && nextScreen) {
+        currentScreen.classList.add('hidden');
+        nextScreen.classList.remove('hidden');
+    }
 }
 
-// Seleção de opções com transição para o gameplay
+// Inicializa a escolha e configura o personagem antes de dar o Start
 function selectOrigin(origin) {
     playerOrigin = origin;
     document.getElementById('screen-origin').classList.add('hidden');
     
-    // Configura a cor do boneco com base na escolha
+    // Customização do personagem dependendo da escolha histórica
     if(origin === 'Nordestino') player.color = '#9900ff'; // Roxo
     if(origin === 'Paulista') player.color = '#ff0033';    // Vermelho
     if(origin === 'Mineiro') player.color = '#ff33aa';     // Rosa/Vermelho claro
     
-    // Inicia o ciclo de atualização e renderização do jogo
+    // Inicia o ciclo contínuo do jogo
     gameLoop();
 }
 
@@ -35,7 +45,7 @@ function update() {
     if (keys['ArrowUp'] || keys['KeyW']) player.y -= player.speed;
     if (keys['ArrowDown'] || keys['KeyS']) player.y += player.speed;
 
-    // Limites das bordas do Canvas
+    // Colisão com as bordas reais do canvas interno
     if (player.x < 0) player.x = 0;
     if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
     if (player.y < 0) player.y = 0;
@@ -43,9 +53,10 @@ function update() {
 }
 
 function draw() {
+    // Limpa a tela antes do novo frame
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Solo de Terra Roxa estilizado no Canvas
+    // Solo de Terra Roxa
     ctx.fillStyle = '#1a001a';
     ctx.fillRect(0, 500, canvas.width, 100);
     ctx.strokeStyle = '#ff0033';
@@ -55,32 +66,33 @@ function draw() {
     ctx.lineTo(canvas.width, 500);
     ctx.stroke();
 
-    // Silhueta de Araucária ao fundo (Paraná)
+    // Cenário: Araucária estilizada (Paraná)
     ctx.fillStyle = '#0d0013';
     ctx.fillRect(650, 320, 20, 180); // Tronco
     ctx.fillStyle = '#260033';
-    ctx.fillRect(580, 300, 160, 20); // Copa camada 1
-    ctx.fillRect(600, 270, 120, 20); // Copa camada 2
+    ctx.fillRect(580, 300, 160, 20); // Galhos inferiores
+    ctx.fillRect(600, 270, 120, 20); // Galhos superiores
 
-    // Interface de texto do jogo
+    // Painel Textual Superior
     ctx.fillStyle = '#ff0033';
-    ctx.font = "bold 16px Merriweather";
+    ctx.font = "bold 16px Merriweather, Georgia, serif";
     ctx.fillText(`Jornada: Migrante ${playerOrigin}`, 20, 40);
     
     ctx.fillStyle = '#800080';
-    ctx.font = "14px Merriweather";
+    ctx.font = "14px Merriweather, Georgia, serif";
     ctx.fillText("Destino: Fronteira Agrícola (Londrina/Maringá)", 20, 65);
 
-    // Desenha o bloco do jogador
+    // Renderização do Jogador
     ctx.fillStyle = player.color;
     ctx.fillRect(player.x, player.y, player.width, player.height);
     
-    // Contorno do jogador para destacar no fundo escuro
+    // Contorno para dar destaque expressionista
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 1;
     ctx.strokeRect(player.x, player.y, player.width, player.height);
 }
 
+// Loop principal de animação estável
 function gameLoop() {
     update();
     draw();
