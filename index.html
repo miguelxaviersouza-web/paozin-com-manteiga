@@ -23,8 +23,8 @@
                 as matas caem para dar lugar ao ciclo de ouro negro do café e às cidades planejadas de Londrina e Maringá.
             </p>
             <div class="options-container">
-                <button class="btn-option" onclick="changeScreen('screen-intro', 'screen-origin')">Iniciar Jornada</button>
-                <button class="btn-option" onclick="alert('Inspirado na obra expressionista e de fundo social do paraense Theodoro Braga.')">Galeria de Arte (Créditos)</button>
+                <button class="btn-option" id="btn-start">Iniciar Jornada</button>
+                <button class="btn-option" id="btn-credits">Galeria de Arte (Créditos)</button>
             </div>
         </div>
 
@@ -35,15 +35,5 @@
                 enfrentando as dificuldades retratadas pelas fortes pinceladas do expressionismo social?
             </p>
             <div class="options-container">
-                <button class="btn-option" onclick="selectOrigin('Nordestino')">Retirante Nordestino (Massiva migração da seca)</button>
-                <button class="btn-option" onclick="selectOrigin('Paulista')">Expansor Paulista (Experiência com o café)</button>
-                <button class="btn-option" onclick="selectOrigin('Mineiro')">Colono Mineiro (Em busca de novas terras ricas)</button>
-            </div>
-        </div>
-
-        <canvas id="gameCanvas" width="800" height="600"></canvas>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+                <button class="btn-option" data-origin="Nordestino">Retirante Nordestino (Massiva migração da seca)</button>
+                <button class="btn-option" data-origin="Paulista">Expansor Paulista (Experiência com o
